@@ -1,6 +1,6 @@
 format_version: 10
 pipelines:
-  go-hello:
+  go-cd-helloooo:
     group: demo
     label_template: "${COUNT}"
     materials:
