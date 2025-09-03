@@ -1,46 +1,49 @@
 format_version: 10
 pipelines:
-go-hello:
-group: demo
-label_template: "${COUNT}"
-materials:
-repo:
-git: "https://github.com/prashanthseepathi/go-hello-gocd.git"
-branch: main
-shallow_clone: true
-auto_update: true
-environment_variables:
-GOFLAGS: "-mod=mod"
-stages:
-- build:
-clean_working_directory: true
-jobs:
-build:
-resources: [golang]
-artifacts:
-- build:
-source: build/hello
-destination: artifacts
-tasks:
-- exec:
-command: bash
-arguments:
-- -lc
-- |
-echo "Go version:" && go version
-mkdir -p build
-go mod download
-go build -o build/hello ./...
-./build/hello
-- test:
-clean_working_directory: false
-jobs:
-unit:
-resources: [golang]
-tasks:
-- exec:
-command: bash
-arguments:
-- -lc
-- |
-go test ./... -v
+  go-hello:
+    group: demo
+    label_template: "${COUNT}"
+    materials:
+      repo:
+        git: "https://github.com/prashanthseepathi/go-hello-gocd.git"
+        branch: main
+        shallow_clone: true
+        auto_update: true
+
+    environment_variables:
+      GOFLAGS: "-mod=mod"
+
+    stages:
+      - build:
+          clean_working_directory: true
+          jobs:
+            build:
+              resources: [golang]
+              artifacts:
+                - build:
+                    source: build/hello
+                    destination: artifacts
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -lc
+                      - |
+                        echo "Go version:" && go version
+                        mkdir -p build
+                        go mod download
+                        go build -o build/hello ./...
+                        ./build/hello
+
+      - test:
+          clean_working_directory: false
+          jobs:
+            unit:
+              resources: [golang]
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                      - -lc
+                      - |
+                        go test ./... -v
